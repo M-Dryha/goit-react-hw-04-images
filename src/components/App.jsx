@@ -21,10 +21,6 @@ export function App() {
     async function fetchPicture() {
       try {
         const newPicture = await GetPicture(query, page);
-        // window.scrollBy({
-        //   top: document.body.clientHeight,
-        //   behavior: 'smooth',
-        // });
 
         setStatus('resolved');
         setPictures(prevPictures => [...prevPictures, ...newPicture.hits]);
@@ -41,6 +37,10 @@ export function App() {
       }
     }
     fetchPicture();
+    window.scrollBy({
+      top: document.body.clientHeight,
+      behavior: 'smooth',
+    });
   }, [query, page]);
 
   const handleForSubmit = values => {
