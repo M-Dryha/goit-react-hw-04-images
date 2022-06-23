@@ -4,7 +4,6 @@ import SearchBar from './SearchBar';
 import GetPicture from './../API';
 import Button from './Button';
 import ImageGallery from './ImageGallery';
-// import Modal from './Modal';
 
 export function App() {
   const [query, setQuery] = useState('');
@@ -19,12 +18,19 @@ export function App() {
       return;
     }
     async function fetchPicture() {
+      setStatus('pending');
       try {
         const newPicture = await GetPicture(query, page);
 
         setStatus('resolved');
         setPictures(prevPictures => [...prevPictures, ...newPicture.hits]);
         setTotalPictures(newPicture.totalHits);
+        setTimeout(() => {
+          window.scrollBy({
+            top: document.body.clientHeight,
+            behavior: 'smooth',
+          });
+        }, 100);
 
         if (newPicture.totalHits === 0) {
           setStatus('rejected');
@@ -37,16 +43,14 @@ export function App() {
       }
     }
     fetchPicture();
-    window.scrollBy({
-      top: document.body.clientHeight,
-      behavior: 'smooth',
-    });
   }, [query, page]);
 
   const handleForSubmit = values => {
+    if (query === values.name) {
+      return;
+    }
     setQuery(values.name);
     setPictures([]);
-    setStatus('pending');
     setPage(1);
   };
 
@@ -61,14 +65,13 @@ export function App() {
       {status === 'rejected' && (
         <div className="Notification">Ooops, no data for "{query}" =(</div>
       )}
-
+      <ImageGallery pictures={pictures} />
       {status === 'pending' && (
         <div className="Loader">
           <Oval color="#00BFFF" height={80} width={80} />
         </div>
       )}
 
-      <ImageGallery pictures={pictures} />
       {pictures.length > 0 && totalPictures !== pictures.length && (
         <Button onClick={loadMore} />
       )}

@@ -10,10 +10,8 @@ const SearchBar = ({ onSubmit }) => {
     name: '',
   };
 
-  const handleSubmit = async (values, actions) => {
-    console.log(values);
-
-    await onSubmit(values);
+  const handleSubmit = values => {
+    onSubmit(values);
   };
 
   return (
